@@ -13,7 +13,7 @@ import torch
 import time
 import re
 
-def main(dataset_config_path, net_config_path, dataset_name, verbose, seed, label_key):
+def main(dataset_config_path, net_config_path, dataset_name, verbose, seed, label_key, valid_limit):
     random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
@@ -22,7 +22,7 @@ def main(dataset_config_path, net_config_path, dataset_name, verbose, seed, labe
 
     data_processor = DataProcessor("gsm8k")
     train_source = list(data_processor.process(load_dataset("gsm8k", "main", split="train", cache_dir="cache")))
-    dev_source = data_processor.process(load_dataset("gsm8k", "main", split="test[:100]", cache_dir="cache"))
+    dev_source = data_processor.process(load_dataset("gsm8k", "main", split=f"test[:{valid_limit}]", cache_dir="cache"))
     
     labels = dev_source[label_key]
     dataset_config_train = DatasetConfig(dataset_config_path)
@@ -55,5 +55,6 @@ if __name__ == "__main__":
     parser.add_argument('--verbose', action=argparse.BooleanOptionalAction)
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--label_key', default="correct", type=str)
+    parser.add_argument('--valid_limit', default=100, type=int)
     args = parser.parse_args()
     main(**vars(args))
