@@ -35,10 +35,16 @@ def main(dataset_config_path, net_config_path, dataset_name, verbose, seed, labe
     second_prompt = prompt_dict[dataset_name]["multi_get_answer_prompt"]
     pipeline = EntangledPipeline(net, train_dataset, dev_dataset, single_step=False, first_prompt=first_prompt, second_prompt=second_prompt)
     results = pipeline.evaluate(verbose=verbose)
-    evaluation_results = sum([label == re.search(r'\d+', result).group() for result, label in zip(results, labels)])/len(labels)
+    evaluation_results = sum([label == get_number(result) for result, label in zip(results, labels)])/len(labels)
     print(f'Evaluation results on {dataset_name}: {evaluation_results}')
     end_time = time.time()
     print(f'Used time: {end_time-start_time}')
+
+def get_number(result):
+    try:
+        return re.search(r'\d+', result).group()
+    except AttributeError: 
+        return 0
 
 
 if __name__ == "__main__":
