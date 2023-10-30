@@ -1,0 +1,10 @@
+{
+    "generation_args": {
+        "num_beams": 1,
+        "max_new_tokens": 500,
+        "min_new_tokens": 1, 
+        "temperature": 1.0
+    }, 
+    "token_file": "configs/huggingface.token",
+    "model_name": "meta-llama/Llama-2-13b-chat-hf"
+}
